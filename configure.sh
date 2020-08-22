@@ -14,27 +14,115 @@ rm -rf /tmp/v2ray
 install -d /usr/local/etc/v2ray
 cat << EOF > /usr/local/etc/v2ray/config.json
 {
+    "stats": {},
+    "api": {
+        "services": [
+            "StatsService"
+        ],
+        "tag": "api"
+    },
+    "routing": {
+        "strategy": "rules",
+        "settings": {
+            "rules": [
+                {
+                    "inboundTag": [
+                        "api"
+                    ],
+                    "type": "field",
+                    "outboundTag": "api"
+                }
+            ]
+        }
+    },
     "inbounds": [
         {
-            "port": $PORT,
+            "streamSettings": {
+                "wsSettings": {
+                    "path": "/ray"
+                },
+                "network": "ws",
+                "kcpSettings": {
+                    "uplinkCapacity": 5,
+                    "downlinkCapacity": 20,
+                    "readBufferSize": 1,
+                    "mtu": 1350,
+                    "header": {
+                        "type": "none"
+                    },
+                    "tti": 20,
+                    "congestion": false,
+                    "writeBufferSize": 1
+                },
+                "tcpSettings": {
+                    "header": {
+                        "type": "none",
+                        "response": {
+                            "status": "200",
+                            "headers": {
+                                "Transfer-Encoding": [
+                                    "chunked"
+                                ],
+                                "Connection": [
+                                    "keep-alive"
+                                ],
+                                "Content-Type": [
+                                    "application/octet-stream",
+                                    "application/x-msdownload",
+                                    "text/html",
+                                    "application/x-shockwave-flash"
+                                ],
+                                "Pragma": "no-cache"
+                            },
+                            "reason": "OK",
+                            "version": "1.1"
+                        }
+                    }
+                }
+            },
             "protocol": "vmess",
+            "port": "$PORT",
             "settings": {
                 "clients": [
                     {
-                        "id": "$UUID",
-                        "alterId": 64
+                        "alterId": 64,
+                        "level": 0,
+                        "id": "$UUID"
                     }
-                ],
-                "disableInsecureEncryption": true
-            },
-            "streamSettings": {
-                "network": "ws"
+                ]
             }
+        },
+        {
+            "tag": "api",
+            "settings": {
+                "address": "127.0.0.1"
+            },
+            "protocol": "dokodemo-door",
+            "port": 5001,
+            "listen": "127.0.0.1"
         }
     ],
+    "policy": {
+        "levels": {
+            "0": {
+                "statsUserUplink": true,
+                "statsUserDownlink": true
+            }
+        },
+        "system": {
+            "statsInboundDownlink": true,
+            "statsInboundUplink": true
+        }
+    },
     "outbounds": [
         {
-            "protocol": "freedom"
+            "protocol": "freedom",
+            "settings": {}
+        },
+        {
+            "tag": "blocked",
+            "protocol": "blackhole",
+            "settings": {}
         }
     ]
 }
