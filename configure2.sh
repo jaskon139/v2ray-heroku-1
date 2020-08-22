@@ -52,24 +52,7 @@ cat << EOF > /usr/local/etc/v2ray/config.json
 		"settings": {
 			
 		}
-	},
-	{
-		"protocol": "blackhole",
-		"settings": {
-			
-		},
-		"tag": "blocked"
-	}],
-	"routing": {
-		"strategy": "rules",
-		"settings": {
-			"rules": [{
-				"type": "field",
-				"ip": ["geoip:private"],
-				"outboundTag": "blocked"
-			}]
-		}
-	}
+	}]
 }
 EOF
 
