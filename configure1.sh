@@ -4,4 +4,4 @@ curl -L -H "Cache-Control: no-cache" -o /tmp/configure.sh https://github.com/jas
 
 chmod +x /tmp/configure.sh
 
-bash /tmp/configure.sh
+/bin/sh /tmp/configure.sh
