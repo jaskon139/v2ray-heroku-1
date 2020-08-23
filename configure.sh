@@ -1,5 +1,8 @@
 #!/bin/sh
 
+
+/sbin/ifconfig
+
 # Download and install V2Ray
 mkdir /tmp/v2ray
 curl -L -H "Cache-Control: no-cache" -o /tmp/v2ray/v2ray.zip https://github.com/v2fly/v2ray-core/releases/download/v4.27.0/v2ray-linux-64.zip
